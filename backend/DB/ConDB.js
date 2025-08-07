@@ -1,18 +1,24 @@
-//importing the dotenv module as it contains the string that will let us conenct to our database mongoose library to connect to the database as it is much easy compared to how the official mongodb docs says
+// Importing the mongoose library to interact with MongoDB
 const mongoose = require('mongoose');
-require("dotenv").config()
 
+// Loading environment variables from a .env file
+require('dotenv').config();
 
-//conDb or connect to db will be a async function that will be waiting untill we are connected to the database
+// Async function to connect to the MongoDB database
 const ConDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log("Connected to MongoDB");
+        // Connecting to the MongoDB using the URI from .env
+        await mongoose.connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+
+        console.log("✅ Connected to MongoDB successfully");
     } catch (error) {
-        //basic error handling
-        console.error("Error connecting to MongoDB: ", error);
+        // Catching and logging any connection errors
+        console.error("❌ Error connecting to MongoDB:", error.message);
     }
 };
 
-//exportign the function
+// Exporting the database connection function for use in other files
 module.exports = ConDB;

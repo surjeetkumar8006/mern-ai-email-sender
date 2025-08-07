@@ -2,13 +2,16 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 
+// ✅ Your deployed backend URL
+const BACKEND_URL = "https://mern-ai-email-sender-1.onrender.com";
+
 function App() {
   const [subject, setSubject] = useState("");
   const [text, setText] = useState("");
   const [numOfDoc, setNumOfDoc] = useState(0);
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
-  const [receivers, setReceivers] = useState(""); // ✅ New: manually input receiver emails
+  const [receivers, setReceivers] = useState("");
 
   useEffect(() => {
     getDoc();
@@ -16,7 +19,7 @@ function App() {
 
   const getDoc = async () => {
     try {
-      const response = await axios.get("http://localhost:5000");
+      const response = await axios.get(`${BACKEND_URL}/`);
       setNumOfDoc(response.data);
     } catch (error) {
       console.log(error);
@@ -32,10 +35,10 @@ function App() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000", {
+      const response = await axios.post(`${BACKEND_URL}/`, {
         subject,
         text,
-        receivers: receivers.split(",").map(email => email.trim()) // Convert comma-separated emails to array
+        receivers: receivers.split(",").map(email => email.trim())
       });
       console.log(response.data);
       alert(`Email has been sent to ${receivers.split(",").length} users.`);
@@ -54,12 +57,12 @@ function App() {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/generate-email", {
+      const res = await axios.post(`${BACKEND_URL}/generate-email`, {
         prompt
       });
 
       setText(res.data.emailBody);
-      setSubject(res.data.subject || "Generated Subject"); // Optional: fill subject too
+      setSubject(res.data.subject || "Generated Subject");
     } catch (error) {
       console.error("Failed to generate email:", error);
       alert("Failed to generate email.");
@@ -72,6 +75,7 @@ function App() {
     <div className="card m-4" style={{ width: "50rem" }}>
       <div className="card-body">
         <h2>MERN - AI Email Sender</h2>
+        <p>Total Users in DB: <strong>{numOfDoc}</strong></p>
         <hr />
 
         <textarea
@@ -98,7 +102,6 @@ function App() {
           onChange={(e) => setText(e.target.value)}
         />
 
-        {/* ✅ New field for entering recipient emails */}
         <textarea
           className="form-control mb-2"
           placeholder="Enter recipient emails (comma separated)"
