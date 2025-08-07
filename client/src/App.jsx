@@ -3,7 +3,8 @@ import "./App.css";
 import axios from "axios";
 
 // ✅ Your deployed backend URL
-const BACKEND_URL = "https://mern-ai-email-sender-1.onrender.com";
+const BACKEND_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 function App() {
   const [subject, setSubject] = useState("");
